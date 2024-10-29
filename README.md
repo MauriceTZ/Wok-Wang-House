@@ -1,7 +1,7 @@
 # Wok Wang House
 
 ## Back
-Para instalar el back se debe ir a la carpeta Back y crear un environment con python 
+Para instalar el back se debe ir a la carpeta /Back y crear un environment con python 
 ```
 -m venv .venv
 ```
