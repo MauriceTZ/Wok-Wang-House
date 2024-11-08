@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -24,12 +25,13 @@ def create_app(test_config=None):
 
     from . import db
     db.init_app(app)
-    from . import empleado
+    from . import empleado, producto
     app.register_blueprint(empleado.bp)
+    app.register_blueprint(producto.bp)
 
     # a simple page that says hello
     @app.route('/hello')
     def hello():
-        return 'Hello, World! '
+        return 'Hello, World!'
 
     return app

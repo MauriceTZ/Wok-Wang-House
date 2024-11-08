@@ -22,17 +22,3 @@ def close_db(e=None):
 
 def init_app(app):
     app.teardown_appcontext(close_db)
-
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="",
-#     database="agilidad"
-# )
-# mydb.close()
-# mycursor = mydb.cursor()
-
-# mycursor.execute("SELECT NOW()")
-# myresult = mycursor.fetchall()
-# for x in myresult:
-#     print(x)
