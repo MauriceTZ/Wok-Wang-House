@@ -7,9 +7,14 @@ Para instalar el back se debe ir a la carpeta /Back y crear un environment con p
 ```
 Luego seleccionar el interprete de python del environment abajo a la derecha en VS Code, y buscar el ejecutable en /Back/.venv/Scripts/python.exe.
 
-Por último se instalan las librerías necesarias, en la carpeta Back hay que ejecutar
+A continuación se instalan las librerías necesarias, en la carpeta Back hay que ejecutar
 ```
 pip install -r requirements.txt
+```
+Por último, se ejecuta el siguiente comando en la carpeta Back para 
+echar a andar el proyecto
+```
+flask --app wokwanghouse run --debug
 ```
 
 ## Front
