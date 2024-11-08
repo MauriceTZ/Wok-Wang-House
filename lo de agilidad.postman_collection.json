@@ -27,6 +27,26 @@
 			"response": []
 		},
 		{
+			"name": "GET empleado/cajero",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/empleado/cajero",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"empleado",
+						"cajero"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET un empleado/cocinero",
 			"request": {
 				"method": "GET",
@@ -42,6 +62,27 @@
 						"empleado",
 						"cocinero",
 						"1006"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET un empleado/cajero",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/empleado/cajero/1007",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"empleado",
+						"cajero",
+						"1007"
 					]
 				}
 			},
@@ -71,6 +112,55 @@
 					"path": [
 						"empleado",
 						"cocinero"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST un empleado/cajero",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"robito\",\r\n    \"apellido\": \"mamani\",\r\n    \"run\": 1007,\r\n    \"correo\": \"robito@gmail.com\",\r\n    \"contraseña\": \"contraseña7\",\r\n    \"telefono\": \"1122334455\",\r\n    \"turno\": \"Mañana\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/empleado/cajero",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"empleado",
+						"cajero"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE un producto",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/producto/103",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"producto",
+						"103"
 					]
 				}
 			},
@@ -107,42 +197,29 @@
 			"response": []
 		},
 		{
-			"name": "DELETE un empleado/cocinero",
+			"name": "PUT un producto",
 			"request": {
-				"method": "DELETE",
+				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cant_stock\": 11,\r\n    \"precio\": 5005\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:5000/empleado/cocinero/1006",
+					"raw": "http://localhost:5000/producto/103",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"empleado",
-						"cocinero",
-						"1006"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "DELETE un empleado/cajero",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/empleado/cajero/1007",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"empleado",
-						"cajero",
-						"1007"
+						"producto",
+						"103"
 					]
 				}
 			},
@@ -179,13 +256,13 @@
 			"response": []
 		},
 		{
-			"name": "POST un empleado/cajero",
+			"name": "POST un producto",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nombre\": \"robito\",\r\n    \"apellido\": \"mamani\",\r\n    \"run\": 1007,\r\n    \"correo\": \"robito@gmail.com\",\r\n    \"contraseña\": \"contraseña7\",\r\n    \"telefono\": \"1122334455\",\r\n    \"turno\": \"Mañana\"\r\n}",
+					"raw": "{\r\n    \"producto_id\": 103,\r\n    \"cant_stock\": 11,\r\n    \"precio\": 5001\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -193,7 +270,26 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/empleado/cajero",
+					"raw": "http://localhost:5000/producto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"producto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE un empleado/cocinero",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/empleado/cocinero/1006",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -201,16 +297,37 @@
 					"port": "5000",
 					"path": [
 						"empleado",
-						"cajero"
+						"cocinero",
+						"1006"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "GET un empleado/cajero",
+			"name": "GET un producto",
 			"request": {
 				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/producto/103",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"producto",
+						"103"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE un empleado/cajero",
+			"request": {
+				"method": "DELETE",
 				"header": [],
 				"url": {
 					"raw": "http://localhost:5000/empleado/cajero/1007",
@@ -229,20 +346,20 @@
 			"response": []
 		},
 		{
-			"name": "GET empleado/cajero",
+			"name": "GET producto",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/empleado/cajero",
+					"raw": "http://localhost:5000/producto/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"empleado",
-						"cajero"
+						"producto",
+						""
 					]
 				}
 			},
