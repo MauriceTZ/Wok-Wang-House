@@ -14,13 +14,13 @@ def obtener_productos():
     return cursor.fetchall()
 
 
-@bp.route("/<int:pedido_id>", methods=["GET"])
-def obtener_un_producto(pedido_id):
+@bp.route("/<int:producto_id>", methods=["GET"])
+def obtener_un_producto(producto_id):
     db = get_db()
     cursor = db.cursor()
     cursor.execute("""
                    SELECT * FROM producto
-                   WHERE Producto_ID = %s""", (pedido_id,))
+                   WHERE Producto_ID = %s""", (producto_id,))
     return cursor.fetchall()
 
 
@@ -35,14 +35,14 @@ def guardar_producto():
     return "OK"
 
 
-@bp.route("/<int:pedido_id>", methods=["PUT"])
-def editar_producto(pedido_id):
+@bp.route("/<int:producto_id>", methods=["PUT"])
+def editar_producto(producto_id):
     j = request.json
     db = get_db()
     cursor = db.cursor()
     cursor.execute("""
                    SELECT * FROM producto
-                   WHERE Producto_ID = %s""", (pedido_id,))
+                   WHERE Producto_ID = %s""", (producto_id,))
     datos_producto = cursor.fetchall()[0]
     nuevos_datos_producto = datos_producto[0], j.get(
         "cant_stock"), j.get("precio"),
@@ -51,17 +51,17 @@ def editar_producto(pedido_id):
     cursor.execute("""
                    UPDATE producto SET
                    Cant_Stock=%s, Precio=%s
-                   WHERE Producto_ID = %s""", nuevos_datos_producto[1:] + [pedido_id])
+                   WHERE Producto_ID = %s""", nuevos_datos_producto[1:] + [producto_id])
     db.commit()
     return "OK"
 
 
-@bp.route("/<int:pedido_id>", methods=["DELETE"])
-def borrar_producto(pedido_id):
+@bp.route("/<int:producto_id>", methods=["DELETE"])
+def borrar_producto(producto_id):
     db = get_db()
     cursor = db.cursor()
     cursor.execute("""
                    DELETE FROM producto
-                   WHERE Producto_ID = %s""", (pedido_id,))
+                   WHERE Producto_ID = %s""", (producto_id,))
     db.commit()
     return {"rows": cursor.rowcount}
