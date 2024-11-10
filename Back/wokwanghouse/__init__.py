@@ -25,9 +25,10 @@ def create_app(test_config=None):
 
     from . import db
     db.init_app(app)
-    from . import empleado, producto
+    from . import empleado, producto, pedido
     app.register_blueprint(empleado.bp)
     app.register_blueprint(producto.bp)
+    app.register_blueprint(pedido.bp)
 
     # a simple page that says hello
     @app.route('/hello')

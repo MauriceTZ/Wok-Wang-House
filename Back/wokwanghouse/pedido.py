@@ -49,9 +49,9 @@ def editar_pedido(pedido_id):
     nuevos_datos_pedido = [(n or v) for n, v in zip(
         nuevos_datos_pedido, datos_pedido)]
     cursor.execute("""
-                   UPDATE producto SET
-                   Cant_Stock=%s, Precio=%s
-                   WHERE Producto_ID = %s""", nuevos_datos_pedido[1:] + [pedido_id])
+                   UPDATE pedido SET
+                   Precio_Total=%s, Num_Bol=%s
+                   WHERE Pedido_ID = %s""", nuevos_datos_pedido[1:] + [pedido_id])
     db.commit()
     return "OK"
 
