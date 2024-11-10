@@ -3,7 +3,7 @@
 ## Back
 Para instalar el back se debe ir a la carpeta /Back y crear un environment con python 
 ```
--m venv .venv
+python -m venv .venv
 ```
 Luego seleccionar el interprete de python del environment abajo a la derecha en VS Code, y buscar el ejecutable en /Back/.venv/Scripts/python.exe.
 
