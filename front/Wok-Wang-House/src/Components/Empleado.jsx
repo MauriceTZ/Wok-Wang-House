@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Empleado = () => {
-    const [nombre, setNombre] = useState();
-    const [apellido, setApellido] = useState();
-    const [run, setRun] = useState();
-    const [correo, setCorreo] = useState();
-    const [contraseña, setContraseña] = useState();
-    const [telefono, setTelefono] = useState();
+    const [nombre, setNombre] = useState("");
+    const [apellido, setApellido] = useState("");
+    const [run, setRun] = useState("");
+    const [correo, setCorreo] = useState("");
+    const [contraseña, setContraseña] = useState("");
+    const [telefono, setTelefono] = useState("");
     const [puesto, setPuesto] = useState("cocinero");
     const [turno, setTurno] = useState("mañana");
 
     let [empleados, setEmpleado] = useState([]);
 
     const API = import.meta.env.VITE_APP_API_KEY;
+
+    async function getUsers() {
+        console.log("hola");
+        fetch(`${API}/empleado/cocinero`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((r) => r.json())
+            .then((d) => {
+                console.log(d);
+                setEmpleado(d);
+            });
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -72,7 +88,6 @@ export const Empleado = () => {
         //     setEditing(false);
         //     setRUN("");
         // }
-        // await getUsers();
 
         setNombre("");
         setApellido("");
@@ -94,6 +109,10 @@ export const Empleado = () => {
             await getUsers();
         }
     };
+
+    useEffect(() => {
+        getUsers();
+    }, []);
 
     return (
         <div className="w-1/2 ">
@@ -289,6 +308,7 @@ export const Empleado = () => {
                             </tr>
                         ))}
                     </tbody>
+
                 </table>
             </div>
             <p className="text-center text-gray-500 text-xs">
