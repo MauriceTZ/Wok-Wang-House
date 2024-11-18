@@ -14,8 +14,12 @@ export const Empleado = () => {
     const [contraseña, setContraseña] = useState();
     const [telefono, setTelefono] = useState();
 
-    let [empleados, setEmpleado] = useState([]);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    }
 
+    let [empleados, setEmpleado] = useState([]);
+    /*
 
     const API = process.env.REACT_APP_API;
 
@@ -79,7 +83,7 @@ export const Empleado = () => {
             await getUsers();
         }
     };
-
+*/
     return (
         <div className="w-1/2 ">
             <div className="flex space-x-8">
@@ -249,9 +253,9 @@ export const Empleado = () => {
                                         Editar
                                     </button>
                                     <button
-
+/*
                                         onClick={(e) => eliminarEmpleado(empleado.rut)}
-
+*/
                                     >
                                         Eliminar
                                     </button>
