@@ -1,67 +1,78 @@
-import { useState } from "react"
-
-
-
-
+import { useState } from "react";
 
 export const Empleado = () => {
-
-
     const [nombre, setNombre] = useState();
     const [apellido, setApellido] = useState();
     const [run, setRun] = useState();
     const [correo, setCorreo] = useState();
     const [contraseña, setContraseña] = useState();
     const [telefono, setTelefono] = useState();
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    }
+    const [puesto, setPuesto] = useState("cocinero");
+    const [turno, setTurno] = useState("mañana");
 
     let [empleados, setEmpleado] = useState([]);
-    /*
 
-    const API = process.env.REACT_APP_API;
+    const API = import.meta.env.VITE_APP_API_KEY;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!editing) {
-            const res = await fetch(`${API}/users`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    nombre,
-                    apellido,
-                    run,
-                    correo,
-                    contraseña,
-                    telefono
-                }),
-            });
-            await res.json();
-        } else {
-            const res = await fetch(`${API}/users/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    setNombre,
-                    setApellido,
-                    setRun,
-                    setCorreo,
-                    setContraseña,
-                    setTelefono
-                }),
-            });
-            const data = await res.json();
-            console.log(data);
-            setEditing(false);
-            setRUN("");
-        }
-        await getUsers();
+        fetch(`${API}/empleado/${puesto}`, {
+            method: "POST",
+            body: JSON.stringify({
+                nombre,
+                apellido,
+                run,
+                correo,
+                contraseña,
+                telefono,
+                turno,
+            }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((r) => console.log(r))
+            .catch((err) => console.log(err));
+
+        // fetch(`${API}/empleado`)
+        // if (!editing) {
+        //     const res = await fetch(`${API}/users`, {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({
+        //             nombre,
+        //             apellido,
+        //             run,
+        //             correo,
+        //             contraseña,
+        //             telefono
+        //         }),
+        //     });
+        //     await res.json();
+        // } else {
+        //     const res = await fetch(`${API}/users/${id}`, {
+        //         method: "PUT",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({
+        //             setNombre,
+        //             setApellido,
+        //             setRun,
+        //             setCorreo,
+        //             setContraseña,
+        //             setTelefono
+        //         }),
+        //     });
+        //     const data = await res.json();
+        //     console.log(data);
+        //     setEditing(false);
+        //     setRUN("");
+        // }
+        // await getUsers();
 
         setNombre("");
         setApellido("");
@@ -69,7 +80,7 @@ export const Empleado = () => {
         setCorreo("");
         setContraseña("");
         setTelefono("");
-        nameInput.current.focus();
+        // nameInput.current.focus();
     };
 
     const eliminarEmpleado = async (id) => {
@@ -83,11 +94,14 @@ export const Empleado = () => {
             await getUsers();
         }
     };
-*/
+
     return (
         <div className="w-1/2 ">
             <div className="flex space-x-8">
-                <form className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
+                <form
+                    className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
+                    onSubmit={handleSubmit}
+                >
                     <div className="mb-4 display: inline-block;">
                         <label
                             className="block text-gray-700 text-sm font-bold mb-2"
@@ -162,10 +176,12 @@ export const Empleado = () => {
                             <select
                                 className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 id="grid-state"
+                                value={puesto}
+                                onChange={(e) => setPuesto(e.target.value)}
                             >
-                                <option>cocinero</option>
-                                <option>cajero</option>
-                                <option>mesero</option>
+                                <option value="cocinero">Cocinero</option>
+                                <option value="cajero">Cajero</option>
+                                <option value="mesero">Mesero</option>
                             </select>
                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                 <svg
@@ -178,7 +194,6 @@ export const Empleado = () => {
                             </div>
                         </div>
                     </div>
-
 
                     <div className="mb-4">
                         <label
@@ -215,13 +230,12 @@ export const Empleado = () => {
                     <div className="flex items-center justify-between">
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
-                            type="button"
+                            type="submit"
                         >
                             Crear Empleado
                         </button>
                     </div>
                 </form>
-
 
                 <table className="table-fixed">
                     <thead>
@@ -238,12 +252,24 @@ export const Empleado = () => {
                     <tbody>
                         {empleados.map((empleado) => (
                             <tr key={empleado._id}>
-                                <td className="border px-4 py-2">{empleado.nombre}</td>
-                                <td className="border px-4 py-2">{empleado.apellido}</td>
-                                <td className="border px-4 py-2">{empleado.run}</td>
-                                <td className="border px-4 py-2">{empleado.telefono}</td>
-                                <td className="border px-4 py-2">{empleado.puesto}</td>
-                                <td className="border px-4 py-2">{empleado.contraseña}</td>
+                                <td className="border px-4 py-2">
+                                    {empleado.nombre}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {empleado.apellido}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {empleado.run}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {empleado.telefono}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {empleado.puesto}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {empleado.contraseña}
+                                </td>
                                 <td>
                                     <button
                                     /*
@@ -253,7 +279,7 @@ export const Empleado = () => {
                                         Editar
                                     </button>
                                     <button
-/*
+                                    /*
                                         onClick={(e) => eliminarEmpleado(empleado.rut)}
 */
                                     >
@@ -262,15 +288,12 @@ export const Empleado = () => {
                                 </td>
                             </tr>
                         ))}
-
                     </tbody>
                 </table>
             </div>
             <p className="text-center text-gray-500 text-xs">
                 ©2024 Wok-Wang-House Corp. All rights reserved.
             </p>
-
         </div>
-
-    )
-}
+    );
+};
