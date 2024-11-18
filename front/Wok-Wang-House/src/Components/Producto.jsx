@@ -19,7 +19,7 @@ export const Producto = () => {
 
   return (
     <div className="w-1/2 ">
-            <div className="flex space-x-8">
+            <div className="flex space-x-12">
                 <form className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
                     <div className="mb-4 display: inline-block;">
                         <label
