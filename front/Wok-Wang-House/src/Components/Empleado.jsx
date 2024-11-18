@@ -7,9 +7,6 @@ import { useState } from "react"
 export const Empleado = () => {
 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    }
     const [nombre, setNombre] = useState();
     const [apellido, setApellido] = useState();
     const [run, setRun] = useState();
@@ -19,9 +16,70 @@ export const Empleado = () => {
 
     let [empleados, setEmpleado] = useState([]);
 
-    /*
+
     const API = process.env.REACT_APP_API;
-    */
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!editing) {
+            const res = await fetch(`${API}/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nombre,
+                    apellido,
+                    run,
+                    correo,
+                    contraseña,
+                    telefono
+                }),
+            });
+            await res.json();
+        } else {
+            const res = await fetch(`${API}/users/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    setNombre,
+                    setApellido,
+                    setRun,
+                    setCorreo,
+                    setContraseña,
+                    setTelefono
+                }),
+            });
+            const data = await res.json();
+            console.log(data);
+            setEditing(false);
+            setRUN("");
+        }
+        await getUsers();
+
+        setNombre("");
+        setApellido("");
+        setRun("");
+        setCorreo("");
+        setContraseña("");
+        setTelefono("");
+        nameInput.current.focus();
+    };
+
+    const eliminarEmpleado = async (id) => {
+        const userResponse = window.confirm("Seguro que quiere eliminarlo?");
+        if (userResponse) {
+            const res = await fetch(`${API}/users/${id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            console.log(data);
+            await getUsers();
+        }
+    };
+
     return (
         <div className="w-1/2 ">
             <div className="flex space-x-8">
@@ -184,16 +242,16 @@ export const Empleado = () => {
                                 <td className="border px-4 py-2">{empleado.contraseña}</td>
                                 <td>
                                     <button
-                                        /*
-                                        onClick={(e) => editarEmpleado(empleado.rut)}
-                                        */
+                                    /*
+                                    onClick={(e) => editarEmpleado(empleado.rut)}
+                                    */
                                     >
                                         Editar
                                     </button>
                                     <button
-                                        /*
+
                                         onClick={(e) => eliminarEmpleado(empleado.rut)}
-                                        */
+
                                     >
                                         Eliminar
                                     </button>
