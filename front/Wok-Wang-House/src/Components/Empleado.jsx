@@ -289,25 +289,26 @@ export const Empleado = () => {
                         {empleados.map((empleado) => (
                             <tr key={empleado._id}>
                                 <td className="border px-4 py-2">
-                                    {empleado.nombre}
+                                    {empleado[0]}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado.apellido}
+                                    {empleado[1]}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado.run}
+                                    {empleado[2]}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado.telefono}
+                                    {empleado[3]}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado.puesto}
+                                    {empleado[4]}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado.contraseña}
+                                    {empleado[5]}
                                 </td>
                                 <td>
                                     <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
                                     /*
                                     onClick={(e) => editarEmpleado(empleado.rut)}
                                     */
@@ -315,6 +316,7 @@ export const Empleado = () => {
                                         Editar
                                     </button>
                                     <button
+                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
                                     /*
                                         onClick={(e) => eliminarEmpleado(empleado.rut)}
 */

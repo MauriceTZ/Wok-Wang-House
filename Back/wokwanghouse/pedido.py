@@ -1,9 +1,20 @@
+import random
+
 from flask import (
     Blueprint, request
 )
 from wokwanghouse.db import get_db
 
 bp = Blueprint('pedido', __name__, url_prefix='/pedido')
+
+
+@bp.route("/agrergarproducto/<int:pedido_id>", methods=["POST"])
+def agregar_pedido(pedido_id):
+    j = request.json
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("""SELECT * FROM pedido""")
+    return cursor.fetchall()
 
 
 @bp.route("/", methods=["GET"])
@@ -27,10 +38,14 @@ def obtener_un_pedido(pedido_id):
 @bp.route("/", methods=["POST"])
 def guardar_pedido():
     j = request.json
+    print(j)
     db = get_db()
     cursor = db.cursor()
+    cursor.execute("""INSERT INTO boleta VALUES (NULL, NOW(), %s)""",
+                   (j["run_cajero"],))
+    db.commit()
     cursor.execute("""INSERT INTO pedido VALUES (%s, %s, %s)""",
-                   (j["pedido_id"], j["precio_total"], j["num_bol"],))
+                   (j["pedido_id"], 0, j["num_bol"],))
     db.commit()
     return "OK"
 
