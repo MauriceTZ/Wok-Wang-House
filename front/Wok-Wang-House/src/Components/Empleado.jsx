@@ -110,6 +110,23 @@ export const Empleado = () => {
         }
     };
 
+    const editarEmpleado = async (id) => {
+        const res = await fetch(`${API}/empleado/${run}`);
+        const data = await res.json();
+    
+        setEditing(true);
+        setId(id);
+    
+        // Resetear
+        setNombre(data.nombre);
+        setApellido(data.apellido);
+        setRun(data.run);
+        setCorreo(data.correo);
+        setContraseña(data.contraseña);
+        setTelefono(data.telefono);
+        nameInput.current.focus();
+      };
+
     useEffect(() => {
         getUsers();
     }, []);
