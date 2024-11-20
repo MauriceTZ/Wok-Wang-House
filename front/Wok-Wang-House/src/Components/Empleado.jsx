@@ -15,19 +15,46 @@ export const Empleado = () => {
     const API = import.meta.env.VITE_APP_API_KEY;
 
     async function getUsers() {
-        console.log("hola");
-        fetch(`${API}/empleado/cocinero`, {
+        let emps = [];
+        let res = await fetch(`${API}/empleado/cocinero`, {
             method: "GET",
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Content-type": "application/json; charset=UTF-8",
             },
-        })
-            .then((r) => r.json())
-            .then((d) => {
-                console.log(d);
-                setEmpleado(d);
-            });
+        });
+        res = await res.json();
+        for (let index = 0; index < res.length; index++) {
+            res[index][9] = "cocinero";
+        }
+        emps.push(...res);
+
+        res = await fetch(`${API}/empleado/cajero`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        });
+        res = await res.json();
+        for (let index = 0; index < res.length; index++) {
+            res[index][9] = "cajero";
+        }
+        emps.push(...res);
+
+        res = await fetch(`${API}/empleado/mesero`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        });
+        res = await res.json();
+        for (let index = 0; index < res.length; index++) {
+            res[index][9] = "mesero";
+        }
+        emps.push(...res);
+        setEmpleado(emps);
     }
 
     const handleSubmit = async (e) => {
@@ -48,84 +75,63 @@ export const Empleado = () => {
                 "Content-type": "application/json; charset=UTF-8",
             },
         })
-            .then((r) => console.log(r))
+            .then((r) => {
+                console.log(r);
+                getUsers();
+            })
             .catch((err) => console.log(err));
-
-        // fetch(`${API}/empleado`)
-        // if (!editing) {
-        //     const res = await fetch(`${API}/users`, {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify({
-        //             nombre,
-        //             apellido,
-        //             run,
-        //             correo,
-        //             contraseña,
-        //             telefono
-        //         }),
-        //     });
-        //     await res.json();
-        // } else {
-        //     const res = await fetch(`${API}/users/${id}`, {
-        //         method: "PUT",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify({
-        //             setNombre,
-        //             setApellido,
-        //             setRun,
-        //             setCorreo,
-        //             setContraseña,
-        //             setTelefono
-        //         }),
-        //     });
-        //     const data = await res.json();
-        //     console.log(data);
-        //     setEditing(false);
-        //     setRUN("");
-        // }
-
         setNombre("");
         setApellido("");
         setRun("");
         setCorreo("");
         setContraseña("");
         setTelefono("");
-        // nameInput.current.focus();
     };
 
-    const eliminarEmpleado = async (id) => {
+    const eliminarEmpleado = async (emp) => {
         const userResponse = window.confirm("Seguro que quiere eliminarlo?");
         if (userResponse) {
-            const res = await fetch(`${API}/users/${id}`, {
+            console.log(emp[9]);
+
+            fetch(`${API}/empleado/${emp[9]}/${emp[2]}`, {
                 method: "DELETE",
-            });
-            const data = await res.json();
-            console.log(data);
-            await getUsers();
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-type": "application/json; charset=UTF-8",
+                },
+            })
+                .then((r) => {
+                    window.alert("Empleado borrado con éxito.");
+                    getUsers();
+                })
+                .catch((err) => console.log(err));
         }
     };
 
-    const editarEmpleado = async (id) => {
-        const res = await fetch(`${API}/empleado/${run}`);
-        const data = await res.json();
-    
-        setEditing(true);
-        setId(id);
-    
-        // Resetear
-        setNombre(data.nombre);
-        setApellido(data.apellido);
-        setRun(data.run);
-        setCorreo(data.correo);
-        setContraseña(data.contraseña);
-        setTelefono(data.telefono);
-        nameInput.current.focus();
-      };
+    const editarEmpleado = async (emp) => {
+        console.log(emp);
+        fetch(`${API}/empleado/${emp[9]}/${emp[2]}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                nombre: emp[0],
+                apellido: emp[1],
+                correo: emp[3],
+                contraseña: emp[4],
+                telefono: emp[5],
+                turno: emp[6],
+            }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((r) => {
+                console.log(r);
+                getUsers();
+                alert("Empleado editado con éxito.");
+            })
+            .catch((err) => console.log(err));
+    };
 
     useEffect(() => {
         getUsers();
@@ -278,48 +284,97 @@ export const Empleado = () => {
                         <tr>
                             <th className="w-1/2 px-4 py-2">Nombre</th>
                             <th className="w-1/4 px-4 py-2">Apelido</th>
-                            <th className="w-1/4 px-4 py-2">Rut</th>
-                            <th className="w-1/4 px-4 py-2">Telefono</th>
-                            <th className="w-1/4 px-4 py-2">Puesto</th>
+                            <th className="w-1/4 px-4 py-2">RUN</th>
                             <th className="w-1/4 px-4 py-2">Correo</th>
                             <th className="w-1/4 px-4 py-2">Contraseña</th>
+                            <th className="w-1/4 px-4 py-2">Teléfono</th>
+                            <th className="w-1/4 px-4 py-2">Turno</th>
+                            <th className="w-1/4 px-4 py-2">Puesto</th>
                         </tr>
                     </thead>
                     <tbody>
                         {empleados.map((empleado) => (
-                            <tr key={empleado._id}>
+                            <tr key={empleado}>
                                 <td className="border px-4 py-2">
-                                    {empleado[0]}
+                                    <input
+                                        type="text"
+                                        placeholder={empleado[0]}
+                                        onChange={(e) => {
+                                            empleado[0] = e.target.value;
+                                        }}
+                                        size="10"
+                                    />
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado[1]}
+                                    <input
+                                        type="text"
+                                        placeholder={empleado[1]}
+                                        onChange={(e) => {
+                                            empleado[1] = e.target.value;
+                                        }}
+                                        size="10"
+                                    />
                                 </td>
                                 <td className="border px-4 py-2">
                                     {empleado[2]}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado[3]}
+                                    <input
+                                        type="text"
+                                        placeholder={empleado[3]}
+                                        onChange={(e) => {
+                                            empleado[3] = e.target.value;
+                                        }}
+                                        size="15"
+                                    />
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado[4]}
+                                    <input
+                                        type="text"
+                                        placeholder={empleado[4]}
+                                        onChange={(e) => {
+                                            empleado[4] = e.target.value;
+                                        }}
+                                        size="15"
+                                    />
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {empleado[5]}
+                                    <input
+                                        type="text"
+                                        placeholder={empleado[5]}
+                                        onChange={(e) => {
+                                            empleado[5] = e.target.value;
+                                        }}
+                                        size="15"
+                                    />
+                                </td>
+                                <td className="border px-4 py-2">
+                                    <input
+                                        type="text"
+                                        placeholder={empleado[6]}
+                                        onChange={(e) => {
+                                            empleado[6] = e.target.value;
+                                        }}
+                                        size="5"
+                                    />
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {empleado[9]}
                                 </td>
                                 <td>
                                     <button
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
-                                    /*
-                                    onClick={(e) => editarEmpleado(empleado.rut)}
-                                    */
+                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
+                                        onClick={(e) =>
+                                            editarEmpleado(empleado)
+                                        }
                                     >
                                         Editar
                                     </button>
                                     <button
-                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
-                                    /*
-                                        onClick={(e) => eliminarEmpleado(empleado.rut)}
-*/
+                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
+                                        onClick={(e) =>
+                                            eliminarEmpleado(empleado)
+                                        }
                                     >
                                         Eliminar
                                     </button>
@@ -327,7 +382,6 @@ export const Empleado = () => {
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
             </div>
             <p className="text-center text-gray-500 text-xs">
