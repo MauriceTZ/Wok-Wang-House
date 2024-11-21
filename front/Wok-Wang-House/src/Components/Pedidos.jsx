@@ -1,23 +1,40 @@
-import { useState } from "react"
+import { useEffect, useState } from "react";
 
 export const Pedidos = () => {
+    const API = import.meta.env.VITE_APP_API_KEY;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    }
+    };
 
-    const [idPedido, setIdPedidos] = useState();
-    const [precioTotal, setPrecioTotal] = useState();
-    const [numBol, setNumBol] = useState();
-
+    const [idPedido, setIdPedidos] = useState("");
+    const [precioTotal, setPrecioTotal] = useState("");
+    const [numBol, setNumBol] = useState("");
 
     let [pedidos, setPedidos] = useState([]);
 
+    async function getPedidos() {
+        fetch(`${API}/pedido`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            // .then((r) => r.json())
+            .then((r) => console.log(r));
+    }
+    useEffect(() => {
+        getPedidos();
+    }, []);
 
-  return (
-    <div className="w-1/2 ">
+    return (
+        <div className="w-1/2 ">
             <div className="flex space-x-8">
-                <form className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
+                <form
+                    className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
+                    onSubmit={handleSubmit}
+                >
                     <div className="mb-4 display: inline-block;">
                         <label
                             className="block text-gray-700 text-sm font-bold mb-2"
@@ -65,7 +82,6 @@ export const Pedidos = () => {
                         />
                     </div>
 
-                    
                     <div className="flex items-center justify-between">
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
@@ -76,7 +92,6 @@ export const Pedidos = () => {
                     </div>
                 </form>
 
-
                 <table className="table-fixed">
                     <thead>
                         <tr>
@@ -84,26 +99,33 @@ export const Pedidos = () => {
                             <th className="w-1/4 px-4 py-2">PrecioTotal</th>
                             <th className="w-1/4 px-4 py-2">numBol</th>
                             <th className="w-1/4 px-4 py-2">Estado</th>
-                            
                         </tr>
                     </thead>
                     <tbody>
                         {pedidos.map((pedido) => (
                             <tr key={pedido._id}>
-                                <td className="border px-4 py-2">{pedido.idPedido}</td>
-                                <td className="border px-4 py-2">{pedido.precioTotal}</td>
-                                <td className="border px-4 py-2">{pedido.numBol}</td>
-                                <td className="border px-4 py-2">{pedido.estado}</td>
+                                <td className="border px-4 py-2">
+                                    {pedido.idPedido}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {pedido.precioTotal}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {pedido.numBol}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {pedido.estado}
+                                </td>
                                 <td>
                                     <button
-                                        /*
+                                    /*
                                         onClick={(e) => editarEmpleado(empleado.rut)}
                                         */
                                     >
                                         Editar
                                     </button>
                                     <button
-                                        /*
+                                    /*
                                         onClick={(e) => eliminarEmpleado(empleado.rut)}
                                         */
                                     >
@@ -112,14 +134,12 @@ export const Pedidos = () => {
                                 </td>
                             </tr>
                         ))}
-
                     </tbody>
                 </table>
             </div>
             <p className="text-center text-gray-500 text-xs">
                 ©2024 Wok-Wang-House Corp. All rights reserved.
             </p>
-
         </div>
-  )
-}
+    );
+};

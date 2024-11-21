@@ -76,7 +76,6 @@ export const Empleado = () => {
             },
         })
             .then((r) => {
-                console.log(r);
                 getUsers();
             })
             .catch((err) => console.log(err));
@@ -91,8 +90,6 @@ export const Empleado = () => {
     const eliminarEmpleado = async (emp) => {
         const userResponse = window.confirm("Seguro que quiere eliminarlo?");
         if (userResponse) {
-            console.log(emp[9]);
-
             fetch(`${API}/empleado/${emp[9]}/${emp[2]}`, {
                 method: "DELETE",
                 headers: {
@@ -109,7 +106,6 @@ export const Empleado = () => {
     };
 
     const editarEmpleado = async (emp) => {
-        console.log(emp);
         fetch(`${API}/empleado/${emp[9]}/${emp[2]}`, {
             method: "PUT",
             body: JSON.stringify({
@@ -126,7 +122,6 @@ export const Empleado = () => {
             },
         })
             .then((r) => {
-                console.log(r);
                 getUsers();
                 alert("Empleado editado con éxito.");
             })
