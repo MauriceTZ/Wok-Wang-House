@@ -11,6 +11,9 @@ export const Empleado = () => {
     const [turno, setTurno] = useState("mañana");
 
     let [empleados, setEmpleado] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
+    const [isEditing, setIsEditing] = useState(false); // Estado para verificar si estamos editando un empleado
+    const [empleadoToEdit, setEmpleadoToEdit] = useState(null); // Empleado que se está editando
 
     const API = import.meta.env.VITE_APP_API_KEY;
 
@@ -36,8 +39,13 @@ export const Empleado = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch(`${API}/empleado/${puesto}`, {
-            method: "POST",
+
+        const endpoint = isEditing
+            ? `${API}/empleado/${puesto}/${empleadoToEdit[2]}`
+            : `${API}/empleado/${puesto}`;
+
+        fetch(endpoint, {
+            method: isEditing ? "PUT" : "POST",
             body: JSON.stringify({
                 nombre,
                 apellido,
@@ -54,14 +62,32 @@ export const Empleado = () => {
         })
             .then((r) => {
                 getUsers();
+                setIsModalOpen(false);
+                setIsEditing(false);
+                setEmpleadoToEdit(null);
             })
             .catch((err) => console.log(err));
+
+        // Limpiar campos
         setNombre("");
         setApellido("");
         setRun("");
         setCorreo("");
         setContraseña("");
         setTelefono("");
+    };
+
+    const editarEmpleado = (emp) => {
+        setEmpleadoToEdit(emp); // Guardar el empleado que se va a editar
+        setNombre(emp[0]);
+        setApellido(emp[1]);
+        setRun(emp[2]);
+        setCorreo(emp[3]);
+        setContraseña(emp[4]);
+        setTelefono(emp[5]);
+        setPuesto(emp[9]);
+        setIsEditing(true); // Cambiar a modo edición
+        setIsModalOpen(true); // Abrir el modal
     };
 
     const eliminarEmpleado = async (emp) => {
@@ -82,29 +108,6 @@ export const Empleado = () => {
         }
     };
 
-    const editarEmpleado = async (emp) => {
-        fetch(`${API}/empleado/${emp[9]}/${emp[2]}`, {
-            method: "PUT",
-            body: JSON.stringify({
-                nombre: emp[0],
-                apellido: emp[1],
-                correo: emp[3],
-                contraseña: emp[4],
-                telefono: emp[5],
-                turno: emp[6],
-            }),
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
-            .then((r) => {
-                getUsers();
-                alert("Empleado editado con éxito.");
-            })
-            .catch((err) => console.log(err));
-    };
-
     useEffect(() => {
         getUsers();
     }, []);
@@ -120,90 +123,17 @@ export const Empleado = () => {
 
             {/* Contenido principal */}
             <div className="container mx-auto">
-                <div className="flex flex-wrap lg:flex-nowrap gap-8">
-                    {/* Formulario */}
-                    <form
-                        className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full lg:w-1/3"
-                        onSubmit={handleSubmit}
+                <div className="flex flex-col gap-4">
+                    {/* Botón para abrir el modal */}
+                    <button
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => setIsModalOpen(true)}
                     >
-                        <h2 className="text-xl font-bold mb-4">
-                            Crear Empleado
-                        </h2>
-                        {/* Campos del formulario */}
-                        <div className="mb-4">
-                            <label className="block text-gray-700 mb-2">
-                                Nombre
-                            </label>
-                            <input
-                                className="shadow border rounded w-full py-2 px-3 text-gray-700"
-                                type="text"
-                                placeholder="Ej: Mauricio"
-                                onChange={(e) => setNombre(e.target.value)}
-                                value={nombre}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 mb-2">
-                                Apellido
-                            </label>
-                            <input
-                                className="shadow border rounded w-full py-2 px-3 text-gray-700"
-                                type="text"
-                                placeholder="Ej: Torrez"
-                                onChange={(e) => setApellido(e.target.value)}
-                                value={apellido}
-                            />
-                        </div>
-                        {/* Campos adicionales */}
-                        <div className="mb-4">
-                            <label className="block text-gray-700 mb-2">
-                                Rut
-                            </label>
-                            <input
-                                className="shadow border rounded w-full py-2 px-3 text-gray-700"
-                                type="text"
-                                placeholder="20.820.467-K"
-                                onChange={(e) => setRun(e.target.value)}
-                                value={run}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 mb-2">
-                                Teléfono
-                            </label>
-                            <input
-                                className="shadow border rounded w-full py-2 px-3 text-gray-700"
-                                type="text"
-                                onChange={(e) => setTelefono(e.target.value)}
-                                value={telefono}
-                            />
-                        </div>
-                        {/* Select de puesto */}
-                        <div className="mb-4">
-                            <label className="block text-gray-700 mb-2">
-                                Puesto
-                            </label>
-                            <select
-                                className="shadow border rounded w-full py-2 px-3 text-gray-700"
-                                value={puesto}
-                                onChange={(e) => setPuesto(e.target.value)}
-                            >
-                                <option value="cocinero">Cocinero</option>
-                                <option value="cajero">Cajero</option>
-                                <option value="mesero">Mesero</option>
-                            </select>
-                        </div>
-                        {/* Botón */}
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            type="submit"
-                        >
-                            Crear
-                        </button>
-                    </form>
+                        Crear Empleado
+                    </button>
 
                     {/* Tabla */}
-                    <div className="bg-white shadow-md rounded p-4 w-full">
+                    <div className="bg-white shadow-md rounded p-4">
                         <h2 className="text-xl font-bold mb-4">
                             Lista de Empleados
                         </h2>
@@ -220,67 +150,32 @@ export const Empleado = () => {
                             <tbody>
                                 {empleados.map((empleado, index) => (
                                     <tr key={index}>
-                                        {/* Columna: Nombre */}
                                         <td className="border px-4 py-2">
-                                            <input
-                                                type="text"
-                                                value={empleado[0]} // Nombre
-                                                onChange={(e) => {
-                                                    const updatedEmpleados = [...empleados];
-                                                    updatedEmpleados[index][0] = e.target.value;
-                                                    setEmpleado(updatedEmpleados);
-                                                }}
-                                                size="10"
-                                                className="w-full border rounded px-2"
-                                            />
+                                            {empleado[0]}
                                         </td>
-
-                                        {/* Columna: Apellido */}
                                         <td className="border px-4 py-2">
-                                            <input
-                                                type="text"
-                                                value={empleado[1]} // Apellido
-                                                onChange={(e) => {
-                                                    const updatedEmpleados = [...empleados];
-                                                    updatedEmpleados[index][1] = e.target.value;
-                                                    setEmpleado(updatedEmpleados);
-                                                }}
-                                                size="10"
-                                                className="w-full border rounded px-2"
-                                            />
+                                            {empleado[1]}
                                         </td>
-
-                                        {/* Columna: RUN */}
                                         <td className="border px-4 py-2">
-                                            <span>{empleado[2]}</span> {/* RUN no editable */}
+                                            {empleado[2]}
                                         </td>
-
-                                        {/* Columna: Correo */}
                                         <td className="border px-4 py-2">
-                                            <input
-                                                type="email"
-                                                value={empleado[3]} // Correo
-                                                onChange={(e) => {
-                                                    const updatedEmpleados = [...empleados];
-                                                    updatedEmpleados[index][3] = e.target.value;
-                                                    setEmpleado(updatedEmpleados);
-                                                }}
-                                                size="15"
-                                                className="w-full border rounded px-2"
-                                            />
+                                            {empleado[3]}
                                         </td>
-
-                                        {/* Columna: Acciones */}
                                         <td className="border px-4 py-2 flex space-x-2">
                                             <button
                                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
-                                                onClick={() => editarEmpleado(empleado)}
+                                                onClick={() =>
+                                                    editarEmpleado(empleado)
+                                                }
                                             >
-                                                Guardar
+                                                Editar
                                             </button>
                                             <button
                                                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-                                                onClick={() => eliminarEmpleado(empleado)}
+                                                onClick={() =>
+                                                    eliminarEmpleado(empleado)
+                                                }
                                             >
                                                 Eliminar
                                             </button>
@@ -288,11 +183,113 @@ export const Empleado = () => {
                                     </tr>
                                 ))}
                             </tbody>
-
                         </table>
                     </div>
                 </div>
             </div>
+
+            {/* Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-md">
+                        <h2 className="text-xl font-bold mb-4">
+                            {isEditing ? "Editar Empleado" : "Crear Empleado"}
+                        </h2>
+                        <form onSubmit={handleSubmit}>
+                            {/* Campos del formulario */}
+                            <div className="mb-4">
+                                <label className="block text-gray-700 mb-2">
+                                    Nombre
+                                </label>
+                                <input
+                                    className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                                    type="text"
+                                    placeholder="Ej: Mauricio"
+                                    onChange={(e) =>
+                                        setNombre(e.target.value)
+                                    }
+                                    value={nombre}
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 mb-2">
+                                    Apellido
+                                </label>
+                                <input
+                                    className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                                    type="text"
+                                    placeholder="Ej: Torrez"
+                                    onChange={(e) =>
+                                        setApellido(e.target.value)
+                                    }
+                                    value={apellido}
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 mb-2">
+                                    RUN
+                                </label>
+                                <input
+                                    className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                                    type="text"
+                                    placeholder="Ej: 20.820.467-K"
+                                    onChange={(e) => setRun(e.target.value)}
+                                    value={run}
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 mb-2">
+                                    Teléfono
+                                </label>
+                                <input
+                                    className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                                    type="text"
+                                    placeholder="Ej: 123456789"
+                                    onChange={(e) =>
+                                        setTelefono(e.target.value)
+                                    }
+                                    value={telefono}
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 mb-2">
+                                    Puesto
+                                </label>
+                                <select
+                                    className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                                    value={puesto}
+                                    onChange={(e) => setPuesto(e.target.value)}
+                                >
+                                    <option value="cocinero">Cocinero</option>
+                                    <option value="cajero">Cajero</option>
+                                    <option value="mesero">Mesero</option>
+                                </select>
+                            </div>
+
+                            {/* Botones */}
+                            <div className="flex justify-end space-x-2">
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    type="submit"
+                                >
+                                    {isEditing ? "Actualizar" : "Guardar"}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                                    onClick={() => setIsModalOpen(false)}
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
