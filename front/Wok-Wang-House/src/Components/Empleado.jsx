@@ -330,7 +330,7 @@ export const Empleado = () => {
                                         onChange={(e) => {
                                             empleado[4] = e.target.value;
                                         }}
-                                        size="15"
+                                        size="10"
                                     />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -340,7 +340,7 @@ export const Empleado = () => {
                                         onChange={(e) => {
                                             empleado[5] = e.target.value;
                                         }}
-                                        size="15"
+                                        size="10"
                                     />
                                 </td>
                                 <td className="border px-4 py-2">
