@@ -8,13 +8,30 @@ from wokwanghouse.db import get_db
 bp = Blueprint('pedido', __name__, url_prefix='/pedido')
 
 
-@bp.route("/agrergarproducto/<int:pedido_id>", methods=["POST"])
+@bp.route("/agregarproducto/<int:pedido_id>", methods=["POST"])
 def agregar_pedido(pedido_id):
     j = request.json
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("""SELECT * FROM pedido""")
-    return cursor.fetchall()
+    cursor.execute("""SELECT * FROM pedido WHERE Pedido_ID = %s""",
+                   (pedido_id,))
+    pedido = cursor.fetchone()
+    print(pedido)
+    cursor.execute("""
+        SELECT Cant_Stock FROM producto WHERE Producto_ID = %s""",
+                   (j["producto_id"],))
+    cant_stock_producto = cursor.fetchone()[0]
+    if cant_stock_producto >= j["cantidad_producto"]:
+        cursor.execute("""INSERT INTO contiene VALUES (%s, %s, %s, %s)""",
+                       (j["cantidad_producto"], pedido_id, pedido[2], j["producto_id"],))
+        db.commit()
+        cursor.execute("""UPDATE producto
+                       SET Cant_Stock = %s
+                       WHERE Producto_ID = %s""",
+                       (cant_stock_producto - j["cantidad_producto"], j["producto_id"],))
+        db.commit()
+        return "OK"
+    raise ValueError
 
 
 @bp.route("/", methods=["GET"])
@@ -24,9 +41,9 @@ def obtener_pedidos():
     cursor.execute("""
         SELECT
             p.Pedido_ID, p.Precio_Total,
-            b.Num_Bol, b.Fecha, b.Run,
-            c.Run,
-            ll.Run
+            b.Num_Bol, b.Fecha, b.Run run_cajero,
+            c.Run run_cocinero,
+            ll.Run run_mesero
         FROM
             pedido p
         JOIN
@@ -64,14 +81,12 @@ def guardar_pedido():
     para los productos que contiene (muchos productos)
     hay que usar la ruta POST /pedido/agrergarproducto/<int:pedido_id>"""
     j = request.json
-    print(j)
     db = get_db()
     cursor = db.cursor()
     cursor.execute("""INSERT INTO boleta VALUES (NULL, NOW(), %s)""",
                    (j["run_cajero"],))
     db.commit()
     num_bol = cursor.lastrowid
-    print(num_bol)
     cursor.execute("""INSERT INTO pedido VALUES (NULL, 0, %s)""",
                    (num_bol,))
     db.commit()
