@@ -411,7 +411,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"pedido_id\": 1,\r\n    \"precio_total\": 123456,\r\n    \"num_bol\": 10\r\n}",
+					"raw": "{\r\n    \"run_cajero\": 1004,\r\n    \"run_cocinero\": 1002,\r\n    \"run_mesero\": 1003\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -476,6 +476,27 @@
 					"path": [
 						"pedido",
 						"5001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/pedido/agregarproducto/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/pedido/agregarproducto/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"pedido",
+						"agregarproducto",
+						""
 					]
 				}
 			},

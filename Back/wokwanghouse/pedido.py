@@ -21,7 +21,29 @@ def agregar_pedido(pedido_id):
 def obtener_pedidos():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("""SELECT * FROM pedido""")
+    cursor.execute("""
+        SELECT
+            p.Pedido_ID, p.Precio_Total,
+            b.Num_Bol, b.Fecha, b.Run,
+            c.Run,
+            ll.Run
+        FROM
+            pedido p
+        JOIN
+            cocina c
+        ON (
+            c.Pedido_ID = p.Pedido_ID AND c.Num_Bol = p.Num_Bol
+        )
+        JOIN
+            lleva ll
+        ON (
+            ll.Pedido_ID = p.Pedido_ID AND ll.Num_Bol = p.Num_Bol
+        )
+        JOIN
+            boleta b
+        ON
+            b.Num_Bol = p.Num_Bol
+    """)
     return cursor.fetchall()
 
 
@@ -37,6 +59,10 @@ def obtener_un_pedido(pedido_id):
 
 @bp.route("/", methods=["POST"])
 def guardar_pedido():
+    """Crea un pedidio el cual debe especificar quien genera
+    la boleta (cajero) y quien lo cocina (cocinero).
+    para los productos que contiene (muchos productos)
+    hay que usar la ruta POST /pedido/agrergarproducto/<int:pedido_id>"""
     j = request.json
     print(j)
     db = get_db()
@@ -44,8 +70,17 @@ def guardar_pedido():
     cursor.execute("""INSERT INTO boleta VALUES (NULL, NOW(), %s)""",
                    (j["run_cajero"],))
     db.commit()
-    cursor.execute("""INSERT INTO pedido VALUES (%s, %s, %s)""",
-                   (j["pedido_id"], 0, j["num_bol"],))
+    num_bol = cursor.lastrowid
+    print(num_bol)
+    cursor.execute("""INSERT INTO pedido VALUES (NULL, 0, %s)""",
+                   (num_bol,))
+    db.commit()
+    pedido_id = cursor.lastrowid
+    cursor.execute("""INSERT INTO cocina VALUES (%s, %s, %s)""",
+                   (j["run_cocinero"], pedido_id, num_bol,))
+    db.commit()
+    cursor.execute("""INSERT INTO lleva VALUES (%s, %s, %s)""",
+                   (j["run_mesero"], pedido_id, num_bol,))
     db.commit()
     return "OK"
 
