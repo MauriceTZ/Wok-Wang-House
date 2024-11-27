@@ -97,11 +97,8 @@ export const Empleado = () => {
                     "Content-type": "application/json; charset=UTF-8",
                 },
             })
-                .then((r) => {
-                    window.alert("Empleado borrado con éxito.");
-                    getUsers();
-                })
-                .catch((err) => console.log(err));
+                .then((r) => getUsers())
+                .catch((err) => alert(err));
         }
     };
 
@@ -121,11 +118,8 @@ export const Empleado = () => {
                 "Content-type": "application/json; charset=UTF-8",
             },
         })
-            .then((r) => {
-                getUsers();
-                alert("Empleado editado con éxito.");
-            })
-            .catch((err) => console.log(err));
+            .then((r) => getUsers())
+            .catch((err) => alert(err));
     };
 
     useEffect(() => {
@@ -295,7 +289,9 @@ export const Empleado = () => {
                                         type="text"
                                         placeholder={empleado[0]}
                                         onChange={(e) => {
-                                            empleado[0] = e.target.value;
+                                            empleado[0] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="10"
                                     />
@@ -305,7 +301,9 @@ export const Empleado = () => {
                                         type="text"
                                         placeholder={empleado[1]}
                                         onChange={(e) => {
-                                            empleado[1] = e.target.value;
+                                            empleado[1] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="10"
                                     />
@@ -318,7 +316,9 @@ export const Empleado = () => {
                                         type="text"
                                         placeholder={empleado[3]}
                                         onChange={(e) => {
-                                            empleado[3] = e.target.value;
+                                            empleado[3] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="15"
                                     />
@@ -328,7 +328,9 @@ export const Empleado = () => {
                                         type="text"
                                         placeholder={empleado[4]}
                                         onChange={(e) => {
-                                            empleado[4] = e.target.value;
+                                            empleado[4] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="10"
                                     />
@@ -338,7 +340,9 @@ export const Empleado = () => {
                                         type="text"
                                         placeholder={empleado[5]}
                                         onChange={(e) => {
-                                            empleado[5] = e.target.value;
+                                            empleado[5] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="10"
                                     />
@@ -348,7 +352,9 @@ export const Empleado = () => {
                                         type="text"
                                         placeholder={empleado[6]}
                                         onChange={(e) => {
-                                            empleado[6] = e.target.value;
+                                            empleado[6] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="5"
                                     />

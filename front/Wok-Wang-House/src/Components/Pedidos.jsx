@@ -38,6 +38,20 @@ export const Pedidos = () => {
             .then((r) => r.json())
             .then((r) => setPedidos(r));
     }
+    async function editarPedido(pedido) {
+        fetch(`${API}/pedido/${pedido[0]}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                precio_total: pedido[1],
+            }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((r) => getPedidos())
+            .catch((err) => alert(err));
+    }
     useEffect(() => {
         getPedidos();
     }, []);
@@ -131,7 +145,9 @@ export const Pedidos = () => {
                                         type="text"
                                         placeholder={pedido[1]}
                                         onChange={(e) => {
-                                            pedido[1] = e.target.value;
+                                            pedido[1] =
+                                                e.target.value ||
+                                                e.target.placeholder;
                                         }}
                                         size="5"
                                     />
@@ -162,9 +178,7 @@ export const Pedidos = () => {
                                     </button>
                                     <button
                                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
-                                        /*
-                                        onClick={(e) => editarEmpleado(empleado.rut)}
-                                        */
+                                        onClick={(e) => editarPedido(pedido)}
                                     >
                                         Editar
                                     </button>
