@@ -78,7 +78,7 @@ export const Empleado = () => {
             .then((r) => {
                 getUsers();
             })
-            .catch((err) => console.log(err));
+            .catch((err) => alert(err));
         setNombre("");
         setApellido("");
         setRun("");
@@ -358,7 +358,7 @@ export const Empleado = () => {
                                 </td>
                                 <td>
                                     <button
-                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
+                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
                                         onClick={(e) =>
                                             editarEmpleado(empleado)
                                         }
@@ -366,7 +366,7 @@ export const Empleado = () => {
                                         Editar
                                     </button>
                                     <button
-                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
+                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
                                         onClick={(e) =>
                                             eliminarEmpleado(empleado)
                                         }

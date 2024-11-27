@@ -18,9 +18,9 @@ def agregar_pedido(pedido_id):
     pedido = cursor.fetchone()
     print(pedido)
     cursor.execute("""
-        SELECT Cant_Stock FROM producto WHERE Producto_ID = %s""",
+        SELECT Cant_Stock, Precio FROM producto WHERE Producto_ID = %s""",
                    (j["producto_id"],))
-    cant_stock_producto = cursor.fetchone()[0]
+    cant_stock_producto, precio_producto = cursor.fetchone()
     if cant_stock_producto >= j["cantidad_producto"]:
         cursor.execute("""INSERT INTO contiene VALUES (%s, %s, %s, %s)""",
                        (j["cantidad_producto"], pedido_id, pedido[2], j["producto_id"],))
@@ -29,6 +29,11 @@ def agregar_pedido(pedido_id):
                        SET Cant_Stock = %s
                        WHERE Producto_ID = %s""",
                        (cant_stock_producto - j["cantidad_producto"], j["producto_id"],))
+        db.commit()
+        cursor.execute("""UPDATE pedido
+                       SET Precio_Total = %s
+                       WHERE Pedido_ID = %s""",
+                       (pedido[1] + precio_producto * j["cantidad_producto"], pedido_id,))
         db.commit()
         return "OK"
     raise ValueError
