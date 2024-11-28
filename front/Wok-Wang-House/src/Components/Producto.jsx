@@ -1,19 +1,12 @@
-import { useState,useEffect } from "react"
-
-
-
-
+import { useEffect, useState } from "react";
 
 export const Producto = () => {
-
     const API = import.meta.env.VITE_APP_API_KEY;
 
-    
     const [productoId, setProductoId] = useState();
     const [cantStock, setCantStock] = useState();
     const [precio, setPrecio] = useState();
-    
-    
+
     let [productos, setProductos] = useState([]);
 
     const handleSubmit = async (e) => {
@@ -27,13 +20,12 @@ export const Producto = () => {
             body: JSON.stringify({
                 productoId,
                 cantStock,
-                precio
+                precio,
             }),
         })
             .then((r) => getProductos())
             .catch((err) => alert(err));
     };
-
 
     async function getProductos() {
         fetch(`${API}/producto/`, {
@@ -44,17 +36,20 @@ export const Producto = () => {
             },
         })
             .then((r) => r.json())
-            .then((r) => getProductos(r));
+            .then((r) => setProductos(r));
     }
 
     useEffect(() => {
         getProductos();
     }, []);
 
-  return (
-    <div className="w-1/2 ">
+    return (
+        <div className="w-1/2 ">
             <div className="flex space-x-12">
-                <form className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
+                <form
+                    className="bg-white shadow-md rounded px-10 pt-6 pb-8 mb-4"
+                    onSubmit={handleSubmit}
+                >
                     <div className="mb-4 display: inline-block;">
                         <label
                             className="block text-gray-700 text-sm font-bold mb-2"
@@ -102,7 +97,6 @@ export const Producto = () => {
                         />
                     </div>
 
-                    
                     <div className="flex items-center justify-between">
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded focus:outline-none focus:shadow-outline"
@@ -112,7 +106,6 @@ export const Producto = () => {
                         </button>
                     </div>
                 </form>
-
 
                 <table className="table-fixed">
                     <thead>
@@ -125,19 +118,25 @@ export const Producto = () => {
                     <tbody>
                         {productos.map((producto) => (
                             <tr key={producto._id}>
-                                <td className="border px-4 py-2">{producto.productoId}</td>
-                                <td className="border px-4 py-2">{producto.cantStock}</td>
-                                <td className="border px-4 py-2">{producto.precio}</td>
+                                <td className="border px-4 py-2">
+                                    {producto.productoId}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {producto.cantStock}
+                                </td>
+                                <td className="border px-4 py-2">
+                                    {producto.precio}
+                                </td>
                                 <td>
                                     <button
-                                        /*
+                                    /*
                                         onClick={(e) => editarProducto(producto.id)}
                                         */
                                     >
                                         Editar
                                     </button>
                                     <button
-                                        /*
+                                    /*
                                         onClick={(e) => EliminarProductp(producto.id)}
                                         */
                                     >
@@ -146,14 +145,12 @@ export const Producto = () => {
                                 </td>
                             </tr>
                         ))}
-
                     </tbody>
                 </table>
             </div>
             <p className="text-center text-gray-500 text-xs">
                 ©2024 Wok-Wang-House Corp. All rights reserved.
             </p>
-
         </div>
-  )
-}
+    );
+};
