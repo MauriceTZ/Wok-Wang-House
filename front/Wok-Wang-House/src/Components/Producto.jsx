@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState,useEffect } from "react"
 
 
 
@@ -6,9 +6,8 @@ import { useState } from "react"
 
 export const Producto = () => {
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    }
+    const API = import.meta.env.VITE_APP_API_KEY;
+
     
     const [productoId, setProductoId] = useState();
     const [cantStock, setCantStock] = useState();
@@ -16,6 +15,41 @@ export const Producto = () => {
     
     
     let [productos, setProductos] = useState([]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        fetch(`${API}/producto/`, {
+            method: "POST",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+            body: JSON.stringify({
+                productoId,
+                cantStock,
+                precio
+            }),
+        })
+            .then((r) => getProductos())
+            .catch((err) => alert(err));
+    };
+
+
+    async function getProductos() {
+        fetch(`${API}/producto/`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((r) => r.json())
+            .then((r) => getProductos(r));
+    }
+
+    useEffect(() => {
+        getProductos();
+    }, []);
 
   return (
     <div className="w-1/2 ">
@@ -31,7 +65,7 @@ export const Producto = () => {
                         <input
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             type="text"
-                            placeholder="Ex: Mauricio"
+                            placeholder="Ex: 42"
                             onChange={(e) => setProductoId(e.target.value)}
                             value={productoId}
                         />
@@ -62,7 +96,7 @@ export const Producto = () => {
                         <input
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             type="text"
-                            placeholder="Ex: 20.820.467-K"
+                            placeholder="Ex: 4000"
                             onChange={(e) => setPrecio(e.target.value)}
                             value={precio}
                         />
