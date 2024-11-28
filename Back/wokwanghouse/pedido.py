@@ -48,7 +48,8 @@ def obtener_pedidos():
             p.Pedido_ID, p.Precio_Total,
             b.Num_Bol, b.Fecha, b.Run run_cajero,
             c.Run run_cocinero,
-            ll.Run run_mesero
+            ll.Run run_mesero,
+            p.Estado
         FROM
             pedido p
         JOIN
@@ -92,7 +93,7 @@ def guardar_pedido():
                    (j["run_cajero"],))
     db.commit()
     num_bol = cursor.lastrowid
-    cursor.execute("""INSERT INTO pedido VALUES (NULL, 0, %s)""",
+    cursor.execute("""INSERT INTO pedido VALUES (NULL, 0, %s, 0)""",
                    (num_bol,))
     db.commit()
     pedido_id = cursor.lastrowid
@@ -115,12 +116,13 @@ def editar_pedido(pedido_id):
                    WHERE Pedido_ID = %s""", (pedido_id,))
     datos_pedido = cursor.fetchall()[0]
     nuevos_datos_pedido = datos_pedido[0], j.get(
-        "precio_total"), j.get("num_bol"),
+        "precio_total"), j.get("num_bol"), j.get("estado")
     nuevos_datos_pedido = [(n or v) for n, v in zip(
         nuevos_datos_pedido, datos_pedido)]
+    nuevos_datos_pedido[3] = j.get("estado") if j.get("estado") is not None else 1
     cursor.execute("""
                    UPDATE pedido SET
-                   Precio_Total=%s, Num_Bol=%s
+                   Precio_Total=%s, Num_Bol=%s, Estado=%s
                    WHERE Pedido_ID = %s""", nuevos_datos_pedido[1:] + [pedido_id])
     db.commit()
     return "OK"
@@ -130,8 +132,42 @@ def editar_pedido(pedido_id):
 def borrar_pedido(pedido_id):
     db = get_db()
     cursor = db.cursor()
+    cursor.execute("SELECT * FROM pedido WHERE Pedido_ID = %s",
+                   (pedido_id,))
+    pedido = cursor.fetchone()
+    cursor.execute("""DELETE FROM cocina
+                   WHERE Pedido_ID = %s
+                   AND Num_Bol = %s""",
+                   (pedido[0], pedido[2],))
+    db.commit()
+    cursor.execute("""DELETE FROM lleva
+                   WHERE Pedido_ID = %s
+                   AND Num_Bol = %s""",
+                   (pedido[0], pedido[2],))
+    db.commit()
+    cursor.execute("""SELECT * FROM contiene
+                   WHERE Pedido_ID = %s
+                   AND Num_Bol = %s""",
+                   (pedido[0], pedido[2],))
+    contiene_list = cursor.fetchall()
+    for contiene in contiene_list:
+        cursor.execute("""UPDATE producto
+                       SET Cant_Stock = Cant_Stock + %s
+                       WHERE Producto_ID = %s""",
+                       (contiene[0], contiene[3],))
+        db.commit()
+    cursor.execute("""DELETE FROM contiene
+                   WHERE Pedido_ID = %s
+                   AND Num_Bol = %s""",
+                   (pedido[0], pedido[2],))
+    db.commit()
     cursor.execute("""
                    DELETE FROM pedido
-                   WHERE Pedido_ID = %s""", (pedido_id,))
+                   WHERE Pedido_ID = %s""",
+                   (pedido[0],))
     db.commit()
-    return {"rows": cursor.rowcount}
+    cursor.execute("""DELETE FROM boleta
+                   WHERE Num_Bol = %s""",
+                   (pedido[2],))
+    db.commit()
+    return "OK"

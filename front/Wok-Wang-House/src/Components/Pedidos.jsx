@@ -43,7 +43,21 @@ export const Pedidos = () => {
             method: "PUT",
             body: JSON.stringify({
                 precio_total: pedido[1],
+                estado: pedido[7],
             }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((r) => getPedidos())
+            .catch((err) => alert(err));
+    }
+    async function eliminarPedido(pedido) {
+        const userResponse = window.confirm("Seguro que quiere eliminarlo?");
+        if (!userResponse) return;
+        fetch(`${API}/pedido/${pedido[0]}`, {
+            method: "DELETE",
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Content-type": "application/json; charset=UTF-8",
@@ -132,6 +146,7 @@ export const Pedidos = () => {
                             <th className="w-1/4 px-4 py-2">RUN Cajero</th>
                             <th className="w-1/4 px-4 py-2">RUN Cocinero</th>
                             <th className="w-1/4 px-4 py-2">RUN Mesero</th>
+                            <th className="w-1/4 px-4 py-2">Estado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -167,6 +182,21 @@ export const Pedidos = () => {
                                 <td className="border px-4 py-2">
                                     {pedido[6]}
                                 </td>
+                                <td className="border px-4 py-2">
+                                    <select
+                                        name="EstadoPedido"
+                                        id=""
+                                        onChange={(e) => {
+                                            pedido[7] = e.target.value;
+                                        }}
+                                        defaultValue={pedido[7].toString()}
+                                    >
+                                        <option value="0">
+                                            No Listo (por defecto)
+                                        </option>
+                                        <option value="1">Listo</option>
+                                    </select>
+                                </td>
                                 <td>
                                     <button
                                         className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
@@ -184,9 +214,7 @@ export const Pedidos = () => {
                                     </button>
                                     <button
                                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
-                                        /*
-                                        onClick={(e) => eliminarEmpleado(empleado.rut)}
-                                        */
+                                        onClick={(e) => eliminarPedido(pedido)}
                                     >
                                         Eliminar
                                     </button>
